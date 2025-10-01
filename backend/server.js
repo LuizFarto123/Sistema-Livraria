@@ -2,23 +2,34 @@
 const express = require("express")
 const sqlite3 = require("sqlite3").verbose()
 const cors = require("cors")
-const bcrypt = require("bcrypt")
 
 // Configurar servidor
 const app = express()
 const PORT = 3000
-app.use(cors())
+
+app.use(cors({
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type"]
+}))
+
 app.use(express.json())
 
 // Criar banco sqlite 
 const db = new sqlite3.Database("./database.db")
 
 // Criar tabela usuarios
-db.run(`CREATE TABLE IF NOT EXISTS usuarios (
+db.run(`CREATE TABLE IF NOT EXISTS livros (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nome TEXT,
-    email TEXT,
-    senha TEXT
+    titulo TEXT,
+    autor TEXT,
+    anodepublicacao TEXT,
+    genero TEXT,
+    idioma TEXT,
+    preco REAL
+
+
     )
 `)
 
@@ -29,86 +40,97 @@ app.get("/", async (req, res) => {
 })
 
 // Cadastrar usuário
-app.post("/usuarios", async (req, res) => {
+app.post("/livros", async (req, res) => {
     console.log(req.body);    
 
     let nome = req.body.nome
-    let email = req.body.email
-    let senha = req.body.senha
-
-    let senhaHash = await bcrypt.hash(senha, 10)
-    console.log(senhaHash);
+    let título = req.body.título
+    let autor = req.body.autor 
+    let anodepublicação = req.body.anodepublicação
+    let genêro = req.body.genêro
+    let idioma = req.body.Idioma 
+    let preço = req.body.Preço 
 
     // inserir no banco de dados
-    db.run(`INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)`,
-        [nome, email, senhaHash],
+    db.run(`INSERT INTO livros (nome, titulo, autor, anodepublicacao, genero, idioma, preco) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [nome, titulo, autor, anodepublicacao, genero, idioma, preco ],
 
         res.json({
             id: this.lastID,
             nome,
-            email
+            titulo, 
+            autor,
+            anodepublicacao,
+            genero,
+            idioma,
+            preco,
+
+
+            
         })
     )
 })
 
 // Listar todos os usuários
-app.get("/usuarios", (req, res) => {
-    db.all(`SELECT id, nome, email FROM usuarios`, [], (err, rows) =>{
+app.get("/livros", (req, res) => {
+    db.all(`SELECT id, nome, título, autor, anodepublicação, gênero, idioma, preço FROM livros`, [], (err, rows) =>{
         res.json(rows)
     })
 })
 
 // Selecionar um usuário
-app.get("/usuarios/:id", (req, res) => {
-    let idUsuario = req.params.id;
+app.get("/livros/:id", (req, res) => {
+    let idLivros = req.params.id;
 
-    db.get(`SELECT id, nome, email FROM usuarios
+    db.get(`SELECT id, nome, título, autor, anodepublicação, gênero, idioma, preço FROM livros
         WHERE id = ?`,
     [idUsuario], (err, result) => {
         if(result){
             res.json(result)
         } else {
             res.status(404).json({
-                "message" : "Usuário não encontrado."
+                "message" : "Livro não encontrado."
             })
         }
     })
 })
 
 // Deletar usuário
-app.delete("/usuarios/:id", (req, res) => {
-    let idUsuario = req.params.id
+app.delete("/livros/:id", (req, res) => {
+    let idLivros = req.params.id
 
-    db.run(`DELETE FROM usuarios WHERE id = ?`, 
-    [idUsuario], function(){
+    db.run(`DELETE FROM livros WHERE id = ?`, 
+    [idLivros], function(){
         // verifica se houve alteração no DB
         if(this.changes === 0){
             res.status(404).json({
-                "message" : "Usuario não encontrado"
+                "message" : "Livro não encontrado"
             })
         }
 
         res.json({
-            "message" : "Usuário deletado"
+            "message" : "Livro deletado"
         })
     })    
 })
 
 // Editar usuário
-app.put("/usuarios/:id", async (req, res) => {
-    let idUsuario = req.params.id
+app.put("/livros/:id", async (req, res) => {
+    let idLivros = req.params.id
 
     let nome = req.body.nome
-    let email = req.body.email
-    let senha = req.body.senha
+    let título = req.body.título
+    let autor = req.body.autor
+    let anodepublicação = req.body.anodepublicação
+    let genêro = req.body.genêro
+    let idioma = req.body.idioma    
+    let preço = req.body.preço
 
-    let senhaHash = await bcrypt.hash(senha, 10)
-
-    db.run(`UPDATE usuarios SET nome = ?, email = ?, senha = ? 
-        WHERE id = ?`, [nome, email, senhaHash, idUsuario],
+    db.run(`UPDATE livros SET nome = ?, título = ?, autor = ?, anodepublicação = ?, gênero = ?, idioma = ?, preço = ? 
+        WHERE id = ?`, [nome, título, autor, anodepublicação, genêro, idioma, preço],
         function(){
             res.json({
-                "message" : "Usuário atualizado com sucesso"
+                "message" : "Livro atualizado com sucesso"
             })
         })
 })
@@ -124,3 +146,4 @@ app.listen(PORT, () => console.log(`Servidor rodando em http://localhost:${PORT}
 
 
 
+  

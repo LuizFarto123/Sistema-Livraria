@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Livros</title>
+</head>
+<body>
+    <h2>Lista de Livros</h2>
+   
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>Título</th>
+                <th>Autor</th>
+                <th>Ano de Publícação</th>
+                <th>Gênero</th>
+                <th>Idioma</th>
+                <th>Preço</th>
+            </tr>
+        </thead>
+        <tbody id="tabela">
+            <!-- Gerado dinamicamente no javascript -->
+        </tbody>
+    </table>
+
+    <script>
+        // busca os dados dos usuarios no server
+        function carregarLivros(){
+            fetch('http://localhost:3000/livros')
+            .then(res => res.json())
+            .then(data => {
+                // pegando o elemento do corpo da tabela
+                const tbody = document.getElementById('tabela')
+                // limpar dados da tabela
+                tbody.innerHTML = ""
+
+                // console.log(data);
+
+                data.forEach(user => {
+                    const tr = document.createElement('tr')
+                   
+                    tr.innerHTML = `
+                        <td>${livro.id}</td>
+                        <td>${livro.nome}</td>
+                        <td>${livro.título}</td>
+                        <td>${livro.autor}</td>
+                        <td>${livro.anodepublicação}</td>
+                        <td>${livro.gênero}</td>
+                        <td>${livro.idioma}</td>
+                        <td>${livro.preço}</td>
+                        <td>
+                            <button class="btn-editar" onclick="editar(${livro.id})">Editar</button>
+                            <button class="btn-excluir" onclick="excluir(${livro.id})">Excluir</button>    
+                        </td>
+                    `
+
+                    tbody.appendChild(tr)
+
+                });
+            })
+        }
+   
+        function excluir(idLivros){
+            fetch(`http://localhost:3000/livros/${idLivros}`,
+            {
+                'method': "DELETE"
+            })
+            .then(() => carregarLivros())
+        }
+
+
+        window.onload = carregarLivros
+    </script>
+</body>
+</html>

@@ -1,0 +1,74 @@
+body{
+    margin: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+h2{
+    text-align: center;
+}
+
+form{
+    width: 300px;
+    margin: auto;
+}
+
+label{
+    display: block;
+    margin-top: 10px;
+}
+
+input{
+    width: 100%;
+    padding: 3px;
+    margin-top: 2px;
+    box-sizing: border-box;
+}
+
+
+
+
+
+
+.botao-cadastro{
+    background-color: rgb(84, 187, 92);
+    color: white;
+}
+
+.botao-cadastro:hover{
+    background-color: rgb(79, 139, 84);;
+}
+
+.botao-cadastro:active{
+    color: black;
+}
+
+
+
+
+
+.botao-lista-usuarios{
+    background-color: rgb(181, 208, 230);
+    color: white;
+    
+}
+
+.botao-lista-usuarios:hover{
+    background-color: rgb(157, 172, 184);;
+}
+
+.botao-lista-usuarios:active{
+    color: rgb(0, 0, 0);
+}
+
+
+
+
+button{
+    width: 100%;
+    padding: 2px;
+    margin-top: 10px;
+    color: black;
+    border-radius: 5px;
+    border: solid 1px gray;
+    cursor: pointer;
+}
